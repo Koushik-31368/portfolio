@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Koushik Reddy — Software Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #F6F3EA;
+    --panel: #EEE9DC;
+    --ink: #201E19;
+    --ink-soft: #6E6857;
+    --line: #C9C1AC;
+    --signal: #C1440E;
+    --signal-soft: #F1DCCC;
+    --display: 'Space Grotesk', sans-serif;
+    --body: 'Inter', -apple-system, sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+
+  body{
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--body);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 64px 64px;
+    background-position: -1px -1px;
+    background-attachment: fixed;
+  }
+  body::before{ content:""; }
+
+  a{ color:inherit; text-decoration:none; }
+  ::selection{ background: var(--signal); color: var(--paper); }
+
+  .wrap{ max-width: 1040px; margin: 0 auto; padding: 0 2rem; }
+
+  /* corner crosshair motif */
+  .mark{
+    position: relative;
+  }
+  .mark::before, .mark::after{
+    content:"+";
+    position:absolute;
+    font-family: var(--mono);
+    font-size: 0.9rem;
+    color: var(--line);
+  }
+
+  /* ---------- NAV ---------- */
+  header.nav{
+    position: sticky; top:0; z-index: 50;
+    background: rgba(246,243,234,0.88);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-inner{
+    max-width:1040px; margin:0 auto; padding: 1.1rem 2rem;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .logo{
+    font-family: var(--mono); font-size: 0.82rem; letter-spacing:0.03em;
+    display:flex; align-items:center; gap:0.5rem;
+  }
+  .logo .dot{ width:7px; height:7px; background:var(--signal); border-radius:50%; display:inline-block; }
+  nav.links{ display:flex; gap:1.9rem; }
+  nav.links a{
+    font-family: var(--mono); font-size:0.76rem; color:var(--ink-soft);
+    text-transform:uppercase; letter-spacing:0.05em;
+    position:relative; padding-bottom:3px;
+    transition: color .15s ease;
+  }
+  nav.links a:hover{ color: var(--ink); }
+  nav.links a::after{
+    content:""; position:absolute; left:0; bottom:0; width:0; height:1px;
+    background: var(--signal); transition: width .2s ease;
+  }
+  nav.links a:hover::after{ width:100%; }
+  .nav-cta{
+    font-family: var(--mono); font-size:0.76rem; border:1px solid var(--ink);
+    padding:0.45rem 0.85rem; transition: background .15s ease, color .15s ease;
+  }
+  .nav-cta:hover{ background:var(--ink); color:var(--paper); }
+  @media (max-width:760px){ nav.links{ display:none; } }
+
+  /* ---------- HERO ---------- */
+  .hero{ padding: 5.5rem 0 4.5rem; position:relative; }
+  .hero .rev{
+    font-family:var(--mono); font-size:0.74rem; color: var(--ink-soft);
+    margin-bottom:1.6rem; display:flex; gap:0.5rem; align-items:center;
+  }
+  .hero .rev .bar{ width:24px; height:1px; background:var(--signal); }
+
+  .hero h1{
+    font-family: var(--display); font-weight:700;
+    font-size: clamp(2.6rem, 6vw, 4.6rem);
+    line-height: 1.02; letter-spacing:-0.01em;
+    margin-bottom: 1.5rem;
+  }
+  .hero h1 span{ color: var(--signal); }
+
+  .hero .sub{
+    font-size: 1.08rem; color: var(--ink-soft); max-width: 46ch;
+    margin-bottom: 2.4rem;
+  }
+
+  .readout{
+    display:grid; grid-template-columns: repeat(4, auto);
+    gap: 2.4rem; border-top: 1px solid var(--line); padding-top: 1.4rem;
+  }
+  .readout .item .k{ font-family:var(--mono); font-size:0.68rem; color:var(--ink-soft); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.3rem; }
+  .readout .item .v{ font-family:var(--display); font-weight:600; font-size:1.02rem; }
+  @media (max-width:760px){ .readout{ grid-template-columns: 1fr 1fr; row-gap:1.4rem; } }
+
+  /* ---------- SECTION SHELL ---------- */
+  section{ padding: 4.2rem 0; border-top: 1px solid var(--line); }
+  .sec-head{ display:flex; align-items:baseline; gap:1rem; margin-bottom:2.4rem; }
+  .sec-num{ font-family:var(--mono); font-size:0.8rem; color: var(--signal); }
+  .sec-head h2{ font-family: var(--display); font-weight:600; font-size:1.65rem; }
+  .sec-note{ font-family:var(--mono); font-size:0.72rem; color:var(--ink-soft); margin-left:auto; text-align:right; }
+
+  /* ---------- ABOUT ---------- */
+  .about-grid{ display:grid; grid-template-columns: 1.3fr 1fr; gap: 3rem; align-items:start; }
+  .about-grid p{ font-size:1.02rem; max-width: 56ch; }
+  .about-grid p + p{ margin-top:1rem; }
+  .stats{ display:grid; grid-template-columns: 1fr 1fr; gap:1.4rem; }
+  .stat{ border:1px solid var(--line); background: var(--panel); padding:1.1rem 1.2rem; }
+  .stat .n{ font-family:var(--display); font-weight:700; font-size:1.9rem; color:var(--signal); }
+  .stat .l{ font-family:var(--mono); font-size:0.68rem; color:var(--ink-soft); margin-top:0.25rem; text-transform:uppercase; letter-spacing:0.04em; }
+  @media (max-width:760px){ .about-grid{ grid-template-columns:1fr; } }
+
+  /* ---------- SKILLS ---------- */
+  .matrix{ display:flex; flex-direction:column; }
+  .matrix-row{
+    display:grid; grid-template-columns: 180px 1fr; gap:1.5rem;
+    padding: 0.9rem 0; border-top:1px solid var(--line);
+  }
+  .matrix-row:last-child{ border-bottom:1px solid var(--line); }
+  .matrix-row .cat{ font-family:var(--mono); font-size:0.76rem; color:var(--ink-soft); text-transform:uppercase; letter-spacing:0.04em; }
+  .matrix-row .vals{ font-size:0.95rem; }
+  .matrix-row .vals span:not(:last-child)::after{ content:" ·"; color: var(--line); }
+  @media (max-width:640px){ .matrix-row{ grid-template-columns:1fr; gap:0.4rem; } }
+
+  /* ---------- PROJECTS ---------- */
+  .proj-card{
+    border: 1px solid var(--line); background: var(--panel);
+    padding: 2rem; margin-bottom: 1.6rem; position: relative;
+  }
+  .proj-card:last-child{ margin-bottom:0; }
+  .proj-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:1.5rem; margin-bottom:0.9rem; flex-wrap:wrap; }
+  .proj-idx{ font-family:var(--mono); font-size:0.75rem; color:var(--signal); margin-bottom:0.5rem; display:block; }
+  .proj-top h3{ font-family:var(--display); font-weight:600; font-size:1.35rem; }
+  .proj-year{ font-family:var(--mono); font-size:0.76rem; color:var(--ink-soft); }
+  .proj-stack{ display:flex; flex-wrap:wrap; gap:0.4rem; margin-bottom:1.2rem; }
+  .proj-stack span{
+    font-family:var(--mono); font-size:0.72rem; padding:0.24rem 0.55rem;
+    border:1px solid var(--line); color: var(--ink-soft); background: var(--paper);
+  }
+  .proj-card ul{ list-style:none; display:flex; flex-direction:column; gap:0.55rem; }
+  .proj-card ul li{ font-size:0.94rem; padding-left:1.1rem; position:relative; }
+  .proj-card ul li::before{ content:"›"; position:absolute; left:0; color: var(--signal); font-family:var(--mono); }
+
+  /* ---------- CERTS ---------- */
+  .cert-grid{ display:grid; grid-template-columns: 1fr 1fr; gap:1.2rem; }
+  .cert-card{ border:1px solid var(--line); padding:1.4rem; background:var(--panel); }
+  .cert-card .tag{ font-family:var(--mono); font-size:0.7rem; color:var(--signal); margin-bottom:0.6rem; display:block; }
+  .cert-card .name{ font-family:var(--display); font-weight:600; font-size:1.05rem; margin-bottom:0.3rem; }
+  .cert-card .issuer{ font-size:0.85rem; color:var(--ink-soft); }
+  @media (max-width:640px){ .cert-grid{ grid-template-columns:1fr; } }
+
+  /* ---------- EDUCATION ---------- */
+  .edu-card{ display:flex; justify-content:space-between; align-items:flex-start; border:1px solid var(--line); background:var(--panel); padding:1.8rem 2rem; flex-wrap:wrap; gap:1rem; }
+  .edu-card h3{ font-family:var(--display); font-weight:600; font-size:1.2rem; margin-bottom:0.3rem; }
+  .edu-card .sub{ font-size:0.92rem; color:var(--ink-soft); margin-bottom:0.9rem; }
+  .edu-card .cgpa{ font-family:var(--mono); font-size:0.8rem; color:var(--signal); }
+  .edu-card .when{ font-family:var(--mono); font-size:0.8rem; color:var(--ink-soft); }
+
+  /* ---------- ACHIEVEMENTS ---------- */
+  .ach-strip{ display:flex; flex-direction:column; }
+  .ach-item{ display:flex; gap:1.2rem; padding:1.1rem 0; border-top:1px solid var(--line); align-items:baseline; }
+  .ach-item:last-child{ border-bottom:1px solid var(--line); }
+  .ach-item .n{ font-family:var(--mono); font-size:0.78rem; color:var(--signal); width:2rem; flex-shrink:0; }
+  .ach-item p{ font-size:0.96rem; }
+
+  /* ---------- CONTACT ---------- */
+  .contact-block{ padding: 4.5rem 0 5rem; text-align:left; }
+  .contact-block h2{
+    font-family: var(--display); font-weight:700;
+    font-size: clamp(2rem, 5vw, 3.2rem); margin-bottom:1.4rem; line-height:1.08;
+  }
+  .contact-block h2 span{ color:var(--signal); }
+  .contact-links{ display:flex; flex-wrap:wrap; gap:0.9rem; margin-top:1rem; }
+  .contact-links a{
+    font-family:var(--mono); font-size:0.82rem; border:1px solid var(--ink);
+    padding:0.65rem 1.1rem; transition: background .15s ease, color .15s ease;
+  }
+  .contact-links a:hover{ background:var(--ink); color:var(--paper); }
+
+  footer.foot{
+    border-top:1px solid var(--line); padding: 1.6rem 0; font-family:var(--mono);
+    font-size:0.72rem; color:var(--ink-soft); display:flex; justify-content:space-between;
+  }
+
+  /* reveal */
+  .reveal{ opacity:0; transform: translateY(14px); transition: opacity .6s ease, transform .6s ease; }
+  .reveal.in{ opacity:1; transform:none; }
+  @media (prefers-reduced-motion: reduce){
+    .reveal{ opacity:1; transform:none; transition:none; }
+    html{ scroll-behavior:auto; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <div class="logo"><span class="dot"></span>KOUSHIK.REDDY</div>
+    <nav class="links">
+      <a href="#about">About</a>
+      <a href="#skills">Skills</a>
+      <a href="#projects">Projects</a>
+      <a href="#certifications">Certs</a>
+      <a href="#education">Education</a>
+    </nav>
+    <a class="nav-cta" href="#contact">Contact</a>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <section class="hero" style="border-top:none;">
+    <div class="rev"><span class="bar"></span>REV. 2026.07 — VIJAYAWADA, IN</div>
+    <h1>Building full‑stack<br>systems &amp; <span>AI tooling</span>.</h1>
+    <p class="sub">I'm Koushik — a Computer Science undergrad who builds things end to end: backend architecture, React interfaces, and retrieval-augmented AI pipelines that actually ship.</p>
+
+    <div class="readout">
+      <div class="item"><div class="k">Role</div><div class="v">Software Engineer</div></div>
+      <div class="item"><div class="k">Focus</div><div class="v">Full-Stack + AI</div></div>
+      <div class="item"><div class="k">CGPA</div><div class="v">9.3 / 10</div></div>
+      <div class="item"><div class="k">Status</div><div class="v">Open to roles</div></div>
+    </div>
+  </section>
+
+  <section id="about" class="reveal">
+    <div class="sec-head"><span class="sec-num">01</span><h2>About</h2></div>
+    <div class="about-grid">
+      <div>
+        <p>I like working close to the whole stack — designing backend architecture with Spring Boot and Node.js, shipping usable interfaces with React, and experimenting with LLM-based tooling like RAG and semantic search.</p>
+        <p>Most of what I've built started as a way to solve something for myself: a knowledge assistant for the pages I kept forgetting, a platform for learning to trade without real money on the line. I care more about whether something works than how it looks on a slide.</p>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="n">100+</div><div class="l">DSA problems solved</div></div>
+        <div class="stat"><div class="n">2</div><div class="l">Full-stack apps shipped</div></div>
+        <div class="stat"><div class="n">9.3</div><div class="l">CGPA / 10</div></div>
+        <div class="stat"><div class="n">2027</div><div class="l">Graduating</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="skills" class="reveal">
+    <div class="sec-head"><span class="sec-num">02</span><h2>Skills</h2></div>
+    <div class="matrix">
+      <div class="matrix-row"><div class="cat">Languages</div><div class="vals"><span>Java</span><span>Python</span><span>C</span><span>JavaScript</span><span>SQL</span><span>HTML</span><span>CSS</span></div></div>
+      <div class="matrix-row"><div class="cat">Frameworks</div><div class="vals"><span>Spring Boot</span><span>React.js</span><span>Node.js</span><span>Express.js</span></div></div>
+      <div class="matrix-row"><div class="cat">Backend</div><div class="vals"><span>REST APIs</span><span>JWT Auth</span><span>WebSockets</span></div></div>
+      <div class="matrix-row"><div class="cat">Cloud &amp; DevOps</div><div class="vals"><span>AWS</span><span>Docker</span><span>Git</span><span>GitHub</span><span>Render</span><span>Vercel</span></div></div>
+      <div class="matrix-row"><div class="cat">AI / ML</div><div class="vals"><span>RAG</span><span>Vector Embeddings</span><span>Semantic Search</span><span>NLP</span></div></div>
+      <div class="matrix-row"><div class="cat">Core CS</div><div class="vals"><span>DSA</span><span>OOP</span><span>DBMS</span><span>Operating Systems</span></div></div>
+    </div>
+  </section>
+
+  <section id="projects" class="reveal">
+    <div class="sec-head"><span class="sec-num">03</span><h2>Projects</h2><span class="sec-note">2 SELECTED BUILDS</span></div>
+
+    <div class="proj-card">
+      <div class="proj-top">
+        <div>
+          <span class="proj-idx">BUILD / 01</span>
+          <h3>MindMesh</h3>
+        </div>
+        <span class="proj-year">2025</span>
+      </div>
+      <div class="proj-stack">
+        <span>Node.js</span><span>Express</span><span>SQLite</span><span>Groq API</span><span>Gemini API</span><span>RAG</span><span>Chrome Extension APIs</span>
+      </div>
+      <ul>
+        <li>An AI-powered Chrome extension that turns any webpage into a searchable, conversational knowledge base.</li>
+        <li>Full RAG pipeline — content chunking, vector embeddings, cosine-similarity search over a SQLite vector store.</li>
+        <li>Provider-agnostic AI layer (Factory pattern): Groq as primary, Gemini as automatic fallback for reliability.</li>
+        <li>Privacy safeguards — input validation, sensitive-data filtering, graceful handling of rate limits.</li>
+      </ul>
+    </div>
+
+    <div class="proj-card">
+      <div class="proj-top">
+        <div>
+          <span class="proj-idx">BUILD / 02</span>
+          <h3>TradeLearn</h3>
+        </div>
+        <span class="proj-year">2025</span>
+      </div>
+      <div class="proj-stack">
+        <span>Java</span><span>Spring Boot</span><span>React</span><span>PostgreSQL</span><span>WebSockets</span><span>JWT</span><span>Docker</span>
+      </div>
+      <ul>
+        <li>A full-stack trading education platform with a virtual portfolio for practicing strategies on simulated funds.</li>
+        <li>Mission-based learning modules and quizzes that walk beginners through core trading concepts.</li>
+        <li>Real-time price and portfolio updates over WebSockets.</li>
+        <li>Containerized with Docker; deployed on Render with PostgreSQL cloud hosting.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="certifications" class="reveal">
+    <div class="sec-head"><span class="sec-num">04</span><h2>Certifications</h2></div>
+    <div class="cert-grid">
+      <div class="cert-card">
+        <span class="tag">AWS</span>
+        <div class="name">AWS Certified Solutions Architect</div>
+        <div class="issuer">Amazon Web Services</div>
+      </div>
+      <div class="cert-card">
+        <span class="tag">AI-900</span>
+        <div class="name">Azure AI Fundamentals</div>
+        <div class="issuer">Microsoft</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="education" class="reveal">
+    <div class="sec-head"><span class="sec-num">05</span><h2>Education</h2></div>
+    <div class="edu-card">
+      <div>
+        <h3>B.Tech in Computer Science Engineering</h3>
+        <div class="sub">KL University, Vijayawada</div>
+        <div class="cgpa">CGPA 9.3 / 10</div>
+      </div>
+      <div class="when">Expected 2027</div>
+    </div>
+  </section>
+
+  <section id="achievements" class="reveal">
+    <div class="sec-head"><span class="sec-num">06</span><h2>Achievements</h2></div>
+    <div class="ach-strip">
+      <div class="ach-item"><span class="n">01</span><p>Solved 100+ Data Structures and Algorithms problems using Java.</p></div>
+      <div class="ach-item"><span class="n">02</span><p>Maintained a 9.3/10 CGPA throughout B.Tech in Computer Science Engineering.</p></div>
+      <div class="ach-item"><span class="n">03</span><p>Built and deployed full-stack and AI-powered applications using Spring Boot, React, Node.js, PostgreSQL, AWS, and Docker.</p></div>
+    </div>
+  </section>
+
+  <section id="contact" class="contact-block reveal">
+    <h2>Let's build<br>something <span>real</span>.</h2>
+    <p class="sub" style="color:var(--ink-soft); max-width:48ch;">Open to software engineering and full-stack roles. Reach out directly — I usually reply within a day.</p>
+    <div class="contact-links">
+      <a href="mailto:2300031368csemdie@gmail.com">2300031368csemdie@gmail.com</a>
+      <a href="https://github.com/Koushik-31368" target="_blank" rel="noopener">GitHub ↗</a>
+      <a href="https://www.linkedin.com/in/koushik-reddy-24785528a/" target="_blank" rel="noopener">LinkedIn ↗</a>
+      <a href="tel:+916300918718">+91 63009 18718</a>
+    </div>
+  </section>
+
+</div>
+
+<footer class="foot">
+  <div class="wrap" style="width:100%; display:flex; justify-content:space-between;">
+    <span>© 2026 BUSHA KOUSHIK REDDY</span>
+    <span>VIJAYAWADA, IN</span>
+  </div>
+</footer>
+
+<script>
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  document.querySelectorAll('nav.links a').forEach(a=>{
+    a.addEventListener('click', e=>{
+      const id = a.getAttribute('href');
+      const el = document.querySelector(id);
+      if(el){ e.preventDefault(); el.scrollIntoView({behavior:'smooth', block:'start'}); }
+    });
+  });
+</script>
+
+</body>
+</html>
