@@ -607,6 +607,10 @@
             background: var(--blue);
         }
 
+        .proj-card.c-gold::before {
+            background: var(--gold);
+        }
+
         .proj-card:hover {
             transform: translateY(-4px);
             box-shadow: 0 16px 30px -18px rgba(26, 24, 20, 0.35);
@@ -635,6 +639,10 @@
 
         .c-blue .proj-idx {
             color: var(--blue);
+        }
+
+        .c-gold .proj-idx {
+            color: var(--gold);
         }
 
         .proj-top h3 {
@@ -694,6 +702,33 @@
 
         .c-blue ul li::before {
             color: var(--blue);
+        }
+
+        .c-gold ul li::before {
+            color: var(--gold);
+        }
+
+        .proj-links {
+            display: flex;
+            gap: 0.8rem;
+            margin-top: 1.1rem;
+            flex-wrap: wrap;
+        }
+
+        .proj-links a {
+            font-family: var(--body);
+            font-weight: 700;
+            font-size: 0.82rem;
+            border-radius: 999px;
+            border: 1.5px solid var(--ink);
+            padding: 0.45rem 0.95rem;
+            transition: background .15s ease, color .15s ease, transform .15s ease;
+        }
+
+        .proj-links a:hover {
+            background: var(--ink);
+            color: var(--paper);
+            transform: translateY(-1px);
         }
 
         /* ---------- CREDENTIALS ---------- */
@@ -1024,13 +1059,15 @@
         <section class="hero" style="border-top:none;">
             <div class="hero-grid">
                 <div>
-                    <div class="eyebrow"><span class="pulse"></span>Open to software engineering roles</div>
-                    <h1>Building full‑stack<br>systems &amp; <span class="hl">AI tooling</span>.</h1>
+                    <div class="eyebrow"><span class="pulse"></span>Open to software engineering & data engineering
+                        roles</div>
+                    <h1>Building full‑stack<br>systems &amp; <span class="hl">data pipelines</span>.</h1>
                     <div class="role-rotate" id="roleRotate">
                         <span class="show">Full-stack engineer</span>
                     </div>
                     <p class="sub">I'm Koushik — a Computer Science undergrad who builds things end to end: backend
-                        architecture, React interfaces, and retrieval-augmented AI pipelines that actually ship.</p>
+                        architecture, real-time data pipelines, React interfaces, and retrieval-augmented AI pipelines
+                        that actually ship.</p>
                     <div class="hero-ctas">
                         <a href="#projects" class="btn btn-primary">See my work →</a>
                         <a href="#contact" class="btn btn-ghost">Get in touch</a>
@@ -1046,8 +1083,8 @@
                         <div class="l">DSA problems solved</div>
                     </div>
                     <div class="tile t3">
-                        <div class="n">2</div>
-                        <div class="l">Full-stack apps shipped</div>
+                        <div class="n">3</div>
+                        <div class="l">Projects shipped</div>
                     </div>
                     <div class="tile t4">
                         <div class="n">2027</div>
@@ -1069,10 +1106,12 @@
             <div class="about-grid">
                 <div>
                     <p>I like working close to the <mark>whole stack</mark> — designing backend architecture with Spring
-                        Boot and Node.js, shipping usable interfaces with React, and experimenting with LLM-based
-                        tooling like RAG and semantic search.</p>
+                        Boot and Node.js, building real-time data pipelines with Kafka and PostgreSQL, shipping usable
+                        interfaces with React, and experimenting with LLM-based tooling like RAG and semantic search.
+                    </p>
                     <p>Most of what I've built started as a way to solve something for myself: a knowledge assistant for
-                        the pages I kept forgetting, a platform for learning to trade without real money on the line. I
+                        the pages I kept forgetting, a platform for learning to trade without real money on the line, a
+                        streaming pipeline to understand how systems process data at scale. I
                         care more about <mark>whether something works</mark> than how it looks on a slide.</p>
                 </div>
                 <div class="stats">
@@ -1081,8 +1120,8 @@
                         <div class="l">DSA problems solved</div>
                     </div>
                     <div class="stat">
-                        <div class="n">2</div>
-                        <div class="l">Full-stack apps shipped</div>
+                        <div class="n">3</div>
+                        <div class="l">Projects shipped</div>
                     </div>
                     <div class="stat">
                         <div class="n">9.3</div>
@@ -1107,6 +1146,14 @@
                     <div class="cat"><span class="sw" style="background:var(--signal)"></span>Languages</div>
                     <div class="vals">
                         <span>Java</span><span>Python</span><span>C</span><span>JavaScript</span><span>SQL</span><span>HTML</span><span>CSS</span>
+                    </div>
+                </div>
+                <div class="skill-card">
+                    <div class="cat"><span class="sw" style="background:var(--gold)"></span>Data Engineering</div>
+                    <div class="vals">
+                        <span>Apache Kafka</span><span>ETL
+                            Pipelines</span><span>PostgreSQL</span><span>MySQL</span><span>SQLite</span><span>Data
+                            Modeling</span>
                     </div>
                 </div>
                 <div class="skill-card">
@@ -1141,13 +1188,40 @@
             <div class="sec-head">
                 <div><span class="tag">Selected work</span>
                     <h2>Projects</h2>
-                </div><span class="sec-note">2 selected builds</span>
+                </div><span class="sec-note">3 selected builds</span>
+            </div>
+
+            <div class="proj-card c-blue">
+                <div class="proj-top">
+                    <div>
+                        <span class="proj-idx">BUILD 01</span>
+                        <h3>TradeLearn</h3>
+                    </div>
+                    <span class="proj-year">2024</span>
+                </div>
+                <div class="proj-stack">
+                    <span>Java</span><span>Spring
+                        Boot</span><span>React</span><span>PostgreSQL</span><span>WebSockets</span><span>JWT</span><span>Docker</span>
+                </div>
+                <ul>
+                    <li>A full-stack trading education platform with a virtual portfolio for practicing strategies on
+                        simulated funds.</li>
+                    <li>Mission-based learning modules and quizzes that walk beginners through core trading concepts.
+                    </li>
+                    <li>Real-time price and portfolio updates over WebSockets.</li>
+                    <li>Containerized with Docker; deployed on Render with PostgreSQL cloud hosting.</li>
+                </ul>
+                <div class="proj-links">
+                    <a href="https://tradelearn-project.vercel.app/" target="_blank" rel="noopener">Live Demo ↗</a>
+                    <a href="https://github.com/Koushik-31368/tradelearn-project" target="_blank" rel="noopener">GitHub
+                        ↗</a>
+                </div>
             </div>
 
             <div class="proj-card c-teal">
                 <div class="proj-top">
                     <div>
-                        <span class="proj-idx">BUILD 01</span>
+                        <span class="proj-idx">BUILD 02</span>
                         <h3>MindMesh</h3>
                     </div>
                     <span class="proj-year">2025</span>
@@ -1166,28 +1240,34 @@
                     <li>Privacy safeguards — input validation, sensitive-data filtering, graceful handling of rate
                         limits.</li>
                 </ul>
+                <div class="proj-links">
+                    <a href="https://github.com/Koushik-31368/mindmesh-project" target="_blank" rel="noopener">GitHub
+                        ↗</a>
+                </div>
             </div>
 
-            <div class="proj-card c-blue">
+            <div class="proj-card c-gold">
                 <div class="proj-top">
                     <div>
-                        <span class="proj-idx">BUILD 02</span>
-                        <h3>TradeLearn</h3>
+                        <span class="proj-idx">BUILD 03</span>
+                        <h3>Kafka-Pulse</h3>
                     </div>
-                    <span class="proj-year">2025</span>
+                    <span class="proj-year">2026</span>
                 </div>
                 <div class="proj-stack">
-                    <span>Java</span><span>Spring
-                        Boot</span><span>React</span><span>PostgreSQL</span><span>WebSockets</span><span>JWT</span><span>Docker</span>
+                    <span>Python</span><span>Apache Kafka</span><span>PostgreSQL</span><span>Docker</span>
                 </div>
                 <ul>
-                    <li>A full-stack trading education platform with a virtual portfolio for practicing strategies on
-                        simulated funds.</li>
-                    <li>Mission-based learning modules and quizzes that walk beginners through core trading concepts.
-                    </li>
-                    <li>Real-time price and portfolio updates over WebSockets.</li>
-                    <li>Containerized with Docker; deployed on Render with PostgreSQL cloud hosting.</li>
+                    <li>An end-to-end real-time data pipeline simulating e-commerce events using a Kafka
+                        producer-consumer architecture.</li>
+                    <li>In-stream processing logic to detect and flag high-value transactions before persistence.</li>
+                    <li>PostgreSQL schema designed to store processed event data for downstream analytical queries.</li>
+                    <li>Kafka, Zookeeper, and PostgreSQL fully containerized with Docker Compose for a reproducible
+                        local data infrastructure, plus a live terminal dashboard for monitoring throughput.</li>
                 </ul>
+                <div class="proj-links">
+                    <a href="https://github.com/Koushik-31368/kafka-pulse" target="_blank" rel="noopener">GitHub ↗</a>
+                </div>
             </div>
         </section>
 
@@ -1268,8 +1348,8 @@
                             <p>Maintained a 9.3/10 CGPA throughout B.Tech in Computer Science Engineering</p>
                         </div>
                         <div class="ach-row"><span class="ach-check done">✓</span>
-                            <p>Built and deployed full-stack and AI-powered apps using Spring Boot, React, Node.js,
-                                PostgreSQL, AWS, and Docker</p>
+                            <p>Built and deployed full-stack, real-time data pipeline, and AI-powered apps using Spring
+                                Boot, Kafka, React, Node.js, PostgreSQL, AWS, and Docker</p>
                         </div>
                         <div class="ach-row"><span class="ach-check pending">…</span>
                             <p>Filed copyright application for TradeLearn — the full trading platform <span
@@ -1287,8 +1367,8 @@
         <section id="contact" class="contact-block reveal">
             <div class="sec-head" style="margin-bottom:0.6rem;"><span class="tag">Get in touch</span></div>
             <h2 class="contact-title">Let's build<br>something <span class="hl">real</span>.</h2>
-            <p class="sub" style="color:var(--ink-soft); max-width:48ch;">Open to software engineering and full-stack
-                roles. Reach out directly — I usually reply within a day.</p>
+            <p class="sub" style="color:var(--ink-soft); max-width:48ch;">Open to software engineering, data
+                engineering, and full-stack roles. Reach out directly — I usually reply within a day.</p>
             <div class="contact-links">
                 <a href="mailto:2300031368csemdie@gmail.com">2300031368csemdie@gmail.com</a>
                 <a href="https://github.com/Koushik-31368" target="_blank" rel="noopener">GitHub ↗</a>
@@ -1388,7 +1468,7 @@
         });
 
         // rotating role text
-        const roles = ['Full-stack engineer', 'AI tooling builder', 'DSA problem solver', 'Open to new roles'];
+        const roles = ['Full-stack engineer', 'Data pipeline builder', 'AI tooling builder', 'DSA problem solver', 'Open to new roles'];
         const roleEl = document.getElementById('roleRotate');
         if (roleEl) {
             let ri = 0;
