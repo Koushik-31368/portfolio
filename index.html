@@ -611,6 +611,10 @@
             background: var(--gold);
         }
 
+        .proj-card.c-green::before {
+            background: var(--ok);
+        }
+
         .proj-card:hover {
             transform: translateY(-4px);
             box-shadow: 0 16px 30px -18px rgba(26, 24, 20, 0.35);
@@ -643,6 +647,10 @@
 
         .c-gold .proj-idx {
             color: var(--gold);
+        }
+
+        .c-green .proj-idx {
+            color: var(--ok);
         }
 
         .proj-top h3 {
@@ -706,6 +714,10 @@
 
         .c-gold ul li::before {
             color: var(--gold);
+        }
+
+        .c-green ul li::before {
+            color: var(--ok);
         }
 
         .proj-links {
@@ -1083,7 +1095,7 @@
                         <div class="l">DSA problems solved</div>
                     </div>
                     <div class="tile t3">
-                        <div class="n">3</div>
+                        <div class="n">4</div>
                         <div class="l">Projects shipped</div>
                     </div>
                     <div class="tile t4">
@@ -1120,7 +1132,7 @@
                         <div class="l">DSA problems solved</div>
                     </div>
                     <div class="stat">
-                        <div class="n">3</div>
+                        <div class="n">4</div>
                         <div class="l">Projects shipped</div>
                     </div>
                     <div class="stat">
@@ -1174,7 +1186,9 @@
                 <div class="skill-card">
                     <div class="cat"><span class="sw" style="background:var(--signal)"></span>AI / ML</div>
                     <div class="vals"><span>RAG</span><span>Vector Embeddings</span><span>Semantic
-                            Search</span><span>NLP</span></div>
+                            Search</span><span>NLP</span><span>PyTorch</span><span>Transfer
+                            Learning</span><span>Computer Vision</span><span>OCR</span><span>Face Verification</span>
+                    </div>
                 </div>
                 <div class="skill-card">
                     <div class="cat"><span class="sw" style="background:var(--teal)"></span>Core CS</div>
@@ -1188,7 +1202,7 @@
             <div class="sec-head">
                 <div><span class="tag">Selected work</span>
                     <h2>Projects</h2>
-                </div><span class="sec-note">3 selected builds</span>
+                </div><span class="sec-note">4 selected builds</span>
             </div>
 
             <div class="proj-card c-blue">
@@ -1246,10 +1260,36 @@
                 </div>
             </div>
 
-            <div class="proj-card c-gold">
+            <div class="proj-card c-green">
                 <div class="proj-top">
                     <div>
                         <span class="proj-idx">BUILD 03</span>
+                        <h3>Mini Identity Verification &amp; Fraud Engine</h3>
+                    </div>
+                    <span class="proj-year">2026</span>
+                </div>
+                <div class="proj-stack">
+                    <span>Python</span><span>PyTorch</span><span>OpenCV</span><span>EasyOCR</span><span>DeepFace</span><span>scikit-learn</span><span>Streamlit</span>
+                </div>
+                <ul>
+                    <li>An end-to-end KYC-style verification pipeline combining document OCR/parsing, face
+                        verification, and liveness detection into a single inference flow.</li>
+                    <li>Fine-tuned a MobileNetV2 CNN via transfer learning for real-vs-spoof liveness classification,
+                        and trained a Random Forest fraud classifier achieving 85.7% recall and 74.7% F1 on
+                        transaction data.</li>
+                    <li>Combined document, face, liveness, and fraud signals into a single weighted confidence score
+                        with a Streamlit dashboard for step-by-step inference results.</li>
+                </ul>
+                <div class="proj-links">
+                    <a href="https://github.com/Koushik-31368/Mini-Identity-Verification-Fraud-Engine" target="_blank"
+                        rel="noopener">GitHub ↗</a>
+                </div>
+            </div>
+
+            <div class="proj-card c-gold">
+                <div class="proj-top">
+                    <div>
+                        <span class="proj-idx">BUILD 04</span>
                         <h3>Kafka-Pulse</h3>
                     </div>
                     <span class="proj-year">2026</span>
