@@ -615,6 +615,14 @@
             background: var(--ok);
         }
 
+        .proj-card.c-signal::before {
+            background: var(--signal);
+        }
+
+        .proj-card.c-signal::before {
+            background: var(--signal);
+        }
+
         .proj-card:hover {
             transform: translateY(-4px);
             box-shadow: 0 16px 30px -18px rgba(26, 24, 20, 0.35);
@@ -651,6 +659,14 @@
 
         .c-green .proj-idx {
             color: var(--ok);
+        }
+
+        .c-signal .proj-idx {
+            color: var(--signal);
+        }
+
+        .c-signal .proj-idx {
+            color: var(--signal);
         }
 
         .proj-top h3 {
@@ -718,6 +734,14 @@
 
         .c-green ul li::before {
             color: var(--ok);
+        }
+
+        .c-signal ul li::before {
+            color: var(--signal);
+        }
+
+        .c-signal ul li::before {
+            color: var(--signal);
         }
 
         .proj-links {
@@ -1095,7 +1119,7 @@
                         <div class="l">DSA problems solved</div>
                     </div>
                     <div class="tile t3">
-                        <div class="n">4</div>
+                        <div class="n">5</div>
                         <div class="l">Projects shipped</div>
                     </div>
                     <div class="tile t4">
@@ -1132,7 +1156,7 @@
                         <div class="l">DSA problems solved</div>
                     </div>
                     <div class="stat">
-                        <div class="n">4</div>
+                        <div class="n">5</div>
                         <div class="l">Projects shipped</div>
                     </div>
                     <div class="stat">
@@ -1202,7 +1226,7 @@
             <div class="sec-head">
                 <div><span class="tag">Selected work</span>
                     <h2>Projects</h2>
-                </div><span class="sec-note">4 selected builds</span>
+                </div><span class="sec-note">5 selected builds</span>
             </div>
 
             <div class="proj-card c-blue">
@@ -1307,6 +1331,29 @@
                 </ul>
                 <div class="proj-links">
                     <a href="https://github.com/Koushik-31368/kafka-pulse" target="_blank" rel="noopener">GitHub ↗</a>
+                </div>
+            </div>
+
+            <div class="proj-card c-signal">
+                <div class="proj-top">
+                    <div>
+                        <span class="proj-idx">BUILD 05</span>
+                        <h3>PayRoute</h3>
+                    </div>
+                    <span class="proj-year">2026</span>
+                </div>
+                <div class="proj-stack">
+                    <span>Java</span><span>Spring Boot</span><span>React</span><span>PostgreSQL</span><span>WebSocket</span><span>Docker</span>
+                </div>
+                <ul>
+                    <li>A full-stack payment orchestration engine that routes transactions across multiple providers with automatic failover — simulating how aggregators like Stripe and Razorpay operate at scale.</li>
+                    <li>Built a manual circuit breaker from scratch (CLOSED / OPEN / HALF_OPEN state machine) with configurable rolling-window failure tracking and thread-safe transitions, without using any external library.</li>
+                    <li>Idempotency enforced via DB-level UNIQUE constraints on transaction keys, preventing duplicate charges on retries — mirrors real payment gateway design.</li>
+                    <li>Rule-based anomaly detection (large amount, burst activity, repeated failures) and a live dashboard over STOMP/WebSocket; full stack containerised with Docker Compose.</li>
+                </ul>
+                <div class="proj-links">
+                    <a href="https://pay-route-gules.vercel.app/" target="_blank" rel="noopener">Live Demo ↗</a>
+                    <a href="https://github.com/Koushik-31368/PayRoute" target="_blank" rel="noopener">GitHub ↗</a>
                 </div>
             </div>
         </section>
