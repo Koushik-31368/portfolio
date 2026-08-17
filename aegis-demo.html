@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aegis &mdash; Live Demo Walkthrough &middot; Koushik Reddy</title>
+  <meta name="description" content="Step through six moments in a live outage and recovery cycle for the Aegis Edge Resilience System &mdash; no jargon, just what the system is actually doing.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper:       #F6F3EA;
+      --panel:       #FFFFFF;
+      --ink:         #1A1814;
+      --ink-soft:    #6E6857;
+      --line:        #E3DDCB;
+      --signal:      #C1440E;
+      --teal:        #1E7D6B;
+      --blue:        #2E4FA3;
+      --violet:      #6B4FA0;
+      --gold:        #B9860A;
+      --ok:          #2F7D4A;
+      --healthy:     #2F7D4A;
+      --broken:      #C1440E;
+      --recovering:  #B9860A;
+      --buffer-bar:  #2E4FA3;
+      --paper-dim:   #EDE8DA;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      background-image:
+        linear-gradient(var(--line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--line) 1px, transparent 1px);
+      background-size: 64px 64px;
+      background-position: -1px -1px;
+      background-attachment: fixed;
+      color: var(--ink);
+      font-family: 'Inter', -apple-system, sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    ::selection { background: var(--signal); color: var(--paper); }
+
+    /* Back nav */
+    .back-nav {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(246,243,234,0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--line);
+      padding: 0.75rem 2rem;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .back-nav a { font-weight: 600; font-size: 0.9rem; transition: background .15s ease, color .15s ease; }
+    .back-nav a:hover { background: var(--ink); color: var(--paper); }
+    .back-nav .nav-title {
+      font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+      font-size: 0.9rem; letter-spacing: 0.02em; color: var(--ink-soft);
+    }
+
+    /* Layout */
+    .wrap { max-width: 900px; margin: 0 auto; padding: 0 2rem; }
+
+    /* Hero */
+    .hero { padding: 4rem 0 3rem; border-bottom: 1px solid var(--line); }
+    .hero-label {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; font-weight: 500;
+      letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-soft);
+      margin: 0 0 1rem;
+    }
+    .hero-label::before {
+      content: ''; display: inline-block; width: 8px; height: 8px;
+      border-radius: 50%; background: var(--violet);
+      margin-right: 0.5rem; vertical-align: middle;
+    }
+    .hero h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 800;
+      line-height: 1.1; margin: 0 0 1rem;
+    }
+    .hero-sub { font-size: 1.05rem; color: var(--ink-soft); max-width: 600px; margin: 0; }
+
+    /* Stage wrap */
+    .stage-wrap { padding: 3rem 0; }
+
+    /* Pipeline */
+    .pipeline { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .node {
+      flex: 1; min-width: 80px; text-align: center;
+      padding: 0.8rem 0.5rem; border-radius: 10px;
+      border: 2px solid var(--line); background: var(--paper-dim);
+      transition: background 0.4s ease, border-color 0.4s ease, transform 0.3s ease;
+      box-shadow: 0 3px 0 var(--line); cursor: default;
+    }
+    .node.active {
+      background: var(--panel); border-color: var(--ink);
+      transform: translateY(-3px); box-shadow: 0 6px 20px rgba(26,24,20,0.12);
+    }
+    .node-icon { font-size: 1.3rem; display: block; margin-bottom: 0.25rem; }
+    .node-label {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; font-weight: 600;
+      color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.08em;
+    }
+    .arrow { font-size: 1.1rem; color: var(--line); flex-shrink: 0; }
+
+    /* Stage card */
+    .stage {
+      background: var(--panel);
+      border: 1.5px solid var(--line); border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(26,24,20,0.06);
+      transition: box-shadow .2s ease;
+    }
+    .stage:hover { box-shadow: 0 8px 40px rgba(26,24,20,0.10); }
+    .stage-body { padding: 2rem; }
+
+    /* Status bar */
+    .status-bar {
+      display: flex; align-items: center; gap: 0.75rem;
+      margin-bottom: 1.5rem; flex-wrap: wrap;
+    }
+    .status-dot {
+      width: 12px; height: 12px; border-radius: 50%;
+      background: var(--healthy); position: relative;
+    }
+    .status-dot::after {
+      content: ''; position: absolute; inset: -3px;
+      border: 2px solid currentColor; opacity: 0; border-radius: 50%;
+      animation: pulse-ring 1.5s ease infinite;
+    }
+    @keyframes pulse-ring {
+      0%   { opacity: 0.6; transform: scale(1); }
+      100% { opacity: 0;   transform: scale(2); }
+    }
+    .status-label {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-soft);
+    }
+    .conn-badge {
+      margin-left: auto; font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem;
+      font-weight: 600; padding: 0.2rem 0.6rem; border-radius: 999px;
+      border: 1.5px solid var(--line); color: var(--ink-soft);
+      white-space: nowrap; transition: all 0.3s ease;
+    }
+
+    /* Stage header */
+    .stage-header { display: flex; gap: 1rem; align-items: flex-start; margin-bottom: 1.25rem; }
+    .stage-num {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; font-weight: 700;
+      color: var(--paper); background: var(--ink);
+      padding: 0.25rem 0.55rem; border-radius: 6px; white-space: nowrap; margin-top: 0.2rem;
+    }
+    .stage-title { font-family: 'Space Grotesk', sans-serif; font-size: 1.3rem; font-weight: 700; margin: 0; }
+    .stage-tagline { font-size: 0.9rem; color: var(--ink-soft); margin: 0.2rem 0 0; }
+
+    /* Metrics */
+    .metric-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(140px,1fr));
+      gap: 0.75rem; margin: 1.25rem 0;
+    }
+    .metric { background: var(--paper-dim); border: 1px solid var(--line); border-radius: 10px; padding: 0.9rem 1rem; }
+    .metric-label {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; font-weight: 600;
+      color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.4rem;
+    }
+    .metric-val { font-family: 'IBM Plex Mono', monospace; font-size: 1.4rem; font-weight: 700; color: var(--ink); line-height: 1; }
+    .metric-val.healthy { color: var(--healthy); }
+    .metric-val.broken  { color: var(--broken); }
+    .metric-val.recovering { color: var(--recovering); }
+
+    /* Buffer bar */
+    .buffer-section { margin: 1rem 0; }
+    .buffer-label-row {
+      display: flex; justify-content: space-between;
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; font-weight: 600;
+      color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.35rem;
+    }
+    .buffer-track { height: 10px; background: var(--line); border-radius: 999px; overflow: hidden; }
+    .buffer-fill {
+      height: 100%; border-radius: 999px; background: var(--buffer-bar);
+      width: 0%; transition: width 0.7s cubic-bezier(.4,0,.2,1), background 0.4s ease;
+    }
+
+    /* Log panel */
+    .log-panel {
+      background: var(--ink); border-radius: 10px; padding: 1rem 1.2rem;
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; line-height: 1.7;
+      color: #ccc; max-height: 180px; overflow-y: auto; margin-top: 1.25rem;
+    }
+    .log-line { margin: 0; }
+    .log-ts   { color: #777; }
+    .log-ok   { color: #6bc483; }
+    .log-warn { color: #f5b942; }
+    .log-err  { color: #e06c75; }
+    .log-info { color: #61afef; }
+
+    /* Annotation */
+    .annotation {
+      border-left: 3px solid var(--violet); background: rgba(107,79,160,0.06);
+      border-radius: 0 8px 8px 0; padding: 0.9rem 1.1rem;
+      margin: 1.25rem 0; font-size: 0.875rem; line-height: 1.65;
+    }
+    .annotation strong { color: var(--violet); }
+
+    /* Controls */
+    .controls {
+      display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.5rem;
+      padding-top: 1.25rem; border-top: 1px solid var(--line);
+    }
+    .btn {
+      font-family: 'Inter', sans-serif; font-size: 0.875rem; font-weight: 600;
+      padding: 0.65rem 1.3rem; border-radius: 8px; border: none; cursor: pointer;
+      transition: all 0.2s ease; line-height: 1;
+    }
+    .btn-primary { background: var(--ink); color: var(--paper); }
+    .btn-primary:hover { background: #3a3730; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(26,24,20,0.25); }
+    .btn-secondary { background: var(--paper-dim); color: var(--ink); border: 1.5px solid var(--line); }
+    .btn-secondary:hover { background: var(--line); }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+    .step-counter {
+      margin-left: auto; font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem;
+      color: var(--ink-soft); align-self: center;
+    }
+
+    /* Progress dots */
+    .progress-dots { display: flex; gap: 0.5rem; justify-content: center; margin: 1.5rem 0 0; }
+    .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--line); border: none; cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s;
+    }
+    .dot.active  { background: var(--ink); transform: scale(1.35); }
+    .dot.visited { background: var(--ink-soft); }
+
+    /* Architecture aside */
+    .arch-aside {
+      margin-top: 3rem; padding: 1.5rem;
+      border: 1.5px solid var(--line); border-radius: 14px; background: var(--panel);
+    }
+    .arch-title { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1rem; margin: 0 0 1rem; }
+    .arch-row { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+    .arch-chip {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; font-weight: 600;
+      padding: 0.3rem 0.7rem; border-radius: 6px;
+      border: 1.5px solid var(--line); color: var(--ink-soft); background: var(--paper-dim);
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center; padding: 3rem 1rem; font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem; color: var(--ink-soft);
+      border-top: 1px solid var(--line); margin-top: 3rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .back-nav { padding: 0.75rem 1rem; }
+      .wrap { padding: 0 1rem; }
+      .stage-body { padding: 1.25rem; }
+      .hero { padding: 2.5rem 0 2rem; }
+      .pipeline { gap: 0.25rem; }
+      .node { min-width: 60px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav class="back-nav" id="back-nav">
+    <a href="index.html" id="back-link">&larr; Portfolio</a>
+    <span class="nav-title">Aegis &middot; Live Demo</span>
+  </nav>
+
+  <main class="wrap">
+
+    <section class="hero" id="hero-section">
+      <p class="hero-label">Interactive Walkthrough</p>
+      <h1>Aegis Edge Resilience System</h1>
+      <p class="hero-sub">
+        Step through six real moments in a live outage + recovery cycle.
+        Each step shows exactly what the system is doing &mdash; no jargon, no slides.
+      </p>
+    </section>
+
+    <div class="stage-wrap">
+
+      <div class="pipeline" id="pipeline" aria-label="Data pipeline">
+        <div class="node" id="node-sensor" data-stages="0,1,2,3,4,5">
+          <span class="node-icon">&#x1F4E1;</span>
+          <span class="node-label">Sensor</span>
+        </div>
+        <span class="arrow">&#x2192;</span>
+        <div class="node" id="node-edge" data-stages="0,1,2,3,4,5">
+          <span class="node-icon">&#x26A1;</span>
+          <span class="node-label">Edge Agent</span>
+        </div>
+        <span class="arrow">&#x2192;</span>
+        <div class="node" id="node-cb" data-stages="2,3,4">
+          <span class="node-icon">&#x1F50C;</span>
+          <span class="node-label">Circuit Breaker</span>
+        </div>
+        <span class="arrow">&#x2192;</span>
+        <div class="node" id="node-buf" data-stages="2,3">
+          <span class="node-icon">&#x1F4E6;</span>
+          <span class="node-label">Buffer</span>
+        </div>
+        <span class="arrow">&#x2192;</span>
+        <div class="node" id="node-cloud" data-stages="0,4,5">
+          <span class="node-icon">&#x2601;&#xFE0F;</span>
+          <span class="node-label">Cloud DB</span>
+        </div>
+      </div>
+
+      <div class="stage" id="stage-card">
+        <div class="stage-body">
+
+          <div class="status-bar">
+            <span class="status-dot" id="status-dot"></span>
+            <span class="status-label" id="status-label">HEALTHY</span>
+            <span class="conn-badge" id="conn-badge">Cloud: Connected</span>
+          </div>
+
+          <div class="stage-header">
+            <span class="stage-num" id="stage-num">STEP 1 / 6</span>
+            <div>
+              <h2 class="stage-title" id="stage-title">System Running Normally</h2>
+              <p class="stage-tagline" id="stage-tagline">Baseline &mdash; sensors stream data, cloud is happy.</p>
+            </div>
+          </div>
+
+          <div class="metric-grid">
+            <div class="metric"><div class="metric-label">Sensor Rate</div><div class="metric-val healthy" id="m-rate">10 /s</div></div>
+            <div class="metric"><div class="metric-label">Buffer Depth</div><div class="metric-val" id="m-buf">0</div></div>
+            <div class="metric"><div class="metric-label">Circuit</div><div class="metric-val healthy" id="m-circuit">CLOSED</div></div>
+            <div class="metric"><div class="metric-label">Dedups</div><div class="metric-val" id="m-dedup">0</div></div>
+            <div class="metric"><div class="metric-label">Drain Rate</div><div class="metric-val" id="m-drain">&mdash; /s</div></div>
+          </div>
+
+          <div class="buffer-section">
+            <div class="buffer-label-row">
+              <span>Buffer Capacity</span>
+              <span id="buf-pct">0%</span>
+            </div>
+            <div class="buffer-track"><div class="buffer-fill" id="buf-fill"></div></div>
+          </div>
+
+          <div class="log-panel" id="log-panel" aria-live="polite"></div>
+
+          <div class="annotation" id="annotation">
+            <strong>What&apos;s happening:</strong>
+            The Edge Agent reads sensor telemetry at 10 Hz and posts each reading directly to the cloud
+            database via a REST call. The circuit breaker is <em>CLOSED</em> &mdash; meaning it&apos;s transparent, letting
+            traffic through. Buffer depth is zero because nothing is being held back.
+          </div>
+
+          <div class="controls">
+            <button class="btn btn-secondary" id="btn-prev" onclick="go(-1)">&larr; Prev</button>
+            <button class="btn btn-primary"   id="btn-next" onclick="go(+1)">Next &rarr;</button>
+            <button class="btn btn-secondary" id="btn-reset" onclick="reset()">&#x21BA; Reset</button>
+            <span class="step-counter" id="step-counter">1 / 6</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="progress-dots" id="progress-dots" role="tablist"></div>
+
+    </div>
+
+    <aside class="arch-aside" aria-label="Technology stack">
+      <p class="arch-title">Tech Under the Hood</p>
+      <div class="arch-row">
+        <span class="arch-chip">Spring Boot 3</span>
+        <span class="arch-chip">Java 17</span>
+        <span class="arch-chip">Spring Data JPA</span>
+        <span class="arch-chip">H2 / PostgreSQL</span>
+        <span class="arch-chip">Resilience4j</span>
+        <span class="arch-chip">Micrometer</span>
+        <span class="arch-chip">Prometheus</span>
+        <span class="arch-chip">Grafana</span>
+        <span class="arch-chip">Docker Compose</span>
+        <span class="arch-chip">PowerShell Chaos</span>
+      </div>
+    </aside>
+
+    <footer class="footer">
+      &copy; 2026 Koushik Reddy &nbsp;&middot;&nbsp;
+      <a href="index.html" style="text-decoration:underline">Portfolio</a>
+      &nbsp;&middot;&nbsp;
+      <a href="https://github.com/Koushik-31368/Aegis" target="_blank" rel="noopener" style="text-decoration:underline">GitHub</a>
+    </footer>
+
+  </main>
+
+  <script>
+    const stages = [
+      {
+        title:'System Running Normally', tagline:'Baseline \u2014 sensors stream data, cloud is happy.',
+        status:'HEALTHY', dotColor:'#2F7D4A', conn:'Cloud: Connected', connOk:true,
+        metrics:{rate:'10 /s',buf:'0',circuit:'CLOSED',dedup:'0',drain:'\u2014 /s'},
+        circuitCls:'healthy', bufPct:0, bufColor:'#2E4FA3',
+        logs:[
+          {cls:'log-ts',  t:'10:00:01.042', m:' Edge Agent started \u2014 polling sensor @ 10 Hz'},
+          {cls:'log-ok',  t:'10:00:01.200', m:' POST /readings \u2192 201 Created  [lat: 14 ms]'},
+          {cls:'log-ok',  t:'10:00:01.300', m:' POST /readings \u2192 201 Created  [lat: 11 ms]'},
+          {cls:'log-ok',  t:'10:00:01.400', m:' POST /readings \u2192 201 Created  [lat: 13 ms]'},
+          {cls:'log-info',t:'10:00:01.500', m:' circuit_state=CLOSED  buffer_depth=0'},
+        ],
+        annotation:'<strong>What\'s happening:</strong> The Edge Agent reads sensor telemetry at 10 Hz and posts each reading directly to the cloud database via a REST call. The circuit breaker is <em>CLOSED</em> \u2014 meaning it\'s transparent, letting traffic through. Buffer depth is zero because nothing is being held back.',
+        activeNodes:['node-sensor','node-edge','node-cloud'],
+      },
+      {
+        title:'Cloud Goes Down', tagline:'Network partition \u2014 POST calls start failing.',
+        status:'FAULT DETECTED', dotColor:'#C1440E', conn:'Cloud: Unreachable', connOk:false,
+        metrics:{rate:'10 /s',buf:'0\u2192\u221e',circuit:'CLOSED\u2192OPEN',dedup:'0',drain:'\u2014 /s'},
+        circuitCls:'broken', bufPct:20, bufColor:'#C1440E',
+        logs:[
+          {cls:'log-err', t:'10:01:00.001', m:' POST /readings \u2192 ConnectException (timeout)'},
+          {cls:'log-err', t:'10:01:00.101', m:' POST /readings \u2192 ConnectException (timeout)'},
+          {cls:'log-warn',t:'10:01:00.200', m:' CircuitBreaker: failure threshold 50% \u2014 counting'},
+          {cls:'log-err', t:'10:01:00.301', m:' POST /readings \u2192 ConnectException (timeout)'},
+          {cls:'log-warn',t:'10:01:00.350', m:' CircuitBreaker: CLOSED \u2192 OPEN  (5 failures)'},
+        ],
+        annotation:'<strong>What\'s happening:</strong> The cloud REST endpoint stops responding. Each POST times out and counts as a failure in Resilience4j\'s sliding-window. After 5 failures in a row the circuit breaker trips to <em>OPEN</em> \u2014 it will now short-circuit further calls instantly, protecting the cloud from a thundering-herd when it recovers.',
+        activeNodes:['node-sensor','node-edge','node-cb'],
+      },
+      {
+        title:'Circuit Open \u2014 Buffer Filling', tagline:'Short-circuit mode: readings land in the local buffer.',
+        status:'BUFFERING', dotColor:'#B9860A', conn:'Cloud: Offline', connOk:false,
+        metrics:{rate:'10 /s',buf:'480',circuit:'OPEN',dedup:'0',drain:'\u2014 /s'},
+        circuitCls:'broken', bufPct:48, bufColor:'#B9860A',
+        logs:[
+          {cls:'log-warn',t:'10:01:00.360', m:' CircuitBreaker OPEN \u2014 routing to buffer'},
+          {cls:'log-info',t:'10:01:01.000', m:' buffer_depth=60   (6 s of data)'},
+          {cls:'log-info',t:'10:01:05.000', m:' buffer_depth=300  (30 s of data)'},
+          {cls:'log-info',t:'10:01:08.000', m:' buffer_depth=480  (48 s of data)'},
+          {cls:'log-info',t:'10:01:08.001', m:' SHA-256 hash indexed \u2014 duplicate guard active'},
+        ],
+        annotation:'<strong>What\'s happening:</strong> Every reading that would normally go to the cloud is instead written to an in-memory queue (the buffer). A SHA-256 hash of each reading is stored so duplicates can be detected when we drain. The Prometheus gauge <code>aegis_buffer_depth</code> is climbing \u2014 visible in Grafana in real time.',
+        activeNodes:['node-sensor','node-edge','node-cb','node-buf'],
+      },
+      {
+        title:'Circuit Probes for Recovery', tagline:'Half-Open: one test call allowed through.',
+        status:'HALF-OPEN', dotColor:'#B9860A', conn:'Cloud: Testing\u2026', connOk:false,
+        metrics:{rate:'10 /s',buf:'600',circuit:'HALF-OPEN',dedup:'0',drain:'\u2014 /s'},
+        circuitCls:'recovering', bufPct:60, bufColor:'#B9860A',
+        logs:[
+          {cls:'log-info',t:'10:02:00.000', m:' CircuitBreaker: wait-duration elapsed \u2014 HALF-OPEN'},
+          {cls:'log-info',t:'10:02:00.001', m:' Probe call \u2192 POST /readings/probe \u2026'},
+          {cls:'log-ok',  t:'10:02:00.210', m:' Probe call \u2192 201 Created  [lat: 18 ms] \u2713'},
+          {cls:'log-ok',  t:'10:02:00.211', m:' CircuitBreaker: HALF-OPEN \u2192 CLOSED'},
+          {cls:'log-info',t:'10:02:00.212', m:' DrainService: starting controlled drain @ 5 /s'},
+        ],
+        annotation:'<strong>What\'s happening:</strong> After a configurable wait (default 10 s) the circuit moves to <em>HALF-OPEN</em> and allows exactly one test call. If it succeeds, the circuit closes; if it fails, the wait timer resets. Here the probe succeeds \u2014 the cloud is back \u2014 so the circuit transitions to CLOSED and the DrainService kicks in.',
+        activeNodes:['node-sensor','node-edge','node-cb','node-buf'],
+      },
+      {
+        title:'Controlled Drain', tagline:'Buffered readings flow to cloud at a safe rate.',
+        status:'RECOVERING', dotColor:'#B9860A', conn:'Cloud: Connected', connOk:true,
+        metrics:{rate:'10 /s',buf:'320',circuit:'CLOSED',dedup:'3',drain:'5 /s'},
+        circuitCls:'healthy', bufPct:32, bufColor:'#2E4FA3',
+        logs:[
+          {cls:'log-ok',  t:'10:02:00.220', m:' Drain [1/600] \u2192 201 Created'},
+          {cls:'log-ok',  t:'10:02:00.420', m:' Drain [2/600] \u2192 201 Created'},
+          {cls:'log-warn',t:'10:02:01.000', m:' Duplicate detected \u2014 skipping (SHA-256 match)'},
+          {cls:'log-ok',  t:'10:02:01.001', m:' Drain [4/600] \u2192 201 Created'},
+          {cls:'log-info',t:'10:02:10.000', m:' buffer_depth=320  drain_rate=5/s'},
+        ],
+        annotation:'<strong>What\'s happening:</strong> The DrainService rate-limits to 5 readings/second so live sensor traffic (10 /s) is never blocked by catch-up writes. Any reading whose SHA-256 hash already exists in the DB unique index is silently skipped \u2014 no duplicate rows, no manual cleanup.',
+        activeNodes:['node-sensor','node-edge','node-cb','node-cloud'],
+      },
+      {
+        title:'Full Recovery', tagline:'Buffer empty \u2014 system back to baseline.',
+        status:'HEALTHY', dotColor:'#2F7D4A', conn:'Cloud: Connected', connOk:true,
+        metrics:{rate:'10 /s',buf:'0',circuit:'CLOSED',dedup:'17',drain:'\u2014 /s'},
+        circuitCls:'healthy', bufPct:0, bufColor:'#2E4FA3',
+        logs:[
+          {cls:'log-ok',  t:'10:04:00.000', m:' Drain complete \u2014 buffer_depth=0'},
+          {cls:'log-ok',  t:'10:04:00.001', m:' DrainService: idle (nothing to drain)'},
+          {cls:'log-info',t:'10:04:00.002', m:' Total dedup-skips=17  (0 corrupt rows)'},
+          {cls:'log-ok',  t:'10:04:00.010', m:' POST /readings \u2192 201 Created  [lat: 12 ms]'},
+          {cls:'log-ok',  t:'10:04:00.110', m:' POST /readings \u2192 201 Created  [lat: 10 ms]'},
+        ],
+        annotation:'<strong>What happened:</strong> All 600 buffered readings have been drained; 17 were silently deduplicated. The system is indistinguishable from step 1 \u2014 no data was lost, no duplicates landed in the DB, and live sensor writes never missed a beat during the entire outage window.',
+        activeNodes:['node-sensor','node-edge','node-cloud'],
+      },
+    ];
+
+    let current = 0;
+
+    // Build progress dots
+    const dotsEl = document.getElementById('progress-dots');
+    stages.forEach((_,i) => {
+      const b = document.createElement('button');
+      b.className = 'dot' + (i===0?' active':'');
+      b.setAttribute('role','tab');
+      b.setAttribute('aria-label','Step '+(i+1));
+      b.onclick = () => { current=i; render(); };
+      dotsEl.appendChild(b);
+    });
+
+    function render() {
+      const s = stages[current];
+
+      // Status
+      const dot = document.getElementById('status-dot');
+      dot.style.background = s.dotColor;
+      dot.style.color = s.dotColor;
+      document.getElementById('status-label').textContent = s.status;
+
+      // Badge
+      const badge = document.getElementById('conn-badge');
+      badge.textContent = s.conn;
+      badge.style.borderColor = s.connOk ? 'var(--healthy)' : 'var(--broken)';
+      badge.style.color       = s.connOk ? 'var(--healthy)' : 'var(--broken)';
+
+      // Header
+      document.getElementById('stage-num').textContent    = 'STEP '+(current+1)+' / '+stages.length;
+      document.getElementById('stage-title').textContent  = s.title;
+      document.getElementById('stage-tagline').textContent= s.tagline;
+
+      // Metrics
+      document.getElementById('m-rate').textContent   = s.metrics.rate;
+      document.getElementById('m-buf').textContent    = s.metrics.buf;
+      document.getElementById('m-drain').textContent  = s.metrics.drain;
+      document.getElementById('m-dedup').textContent  = s.metrics.dedup;
+      const ce = document.getElementById('m-circuit');
+      ce.textContent = s.metrics.circuit;
+      ce.className   = 'metric-val ' + s.circuitCls;
+
+      // Buffer bar
+      const fill = document.getElementById('buf-fill');
+      fill.style.width      = s.bufPct+'%';
+      fill.style.background = s.bufColor;
+      document.getElementById('buf-pct').textContent = s.bufPct+'%';
+
+      // Logs
+      const lp = document.getElementById('log-panel');
+      lp.innerHTML = s.logs.map(l =>
+        `<p class="log-line"><span class="log-ts">${l.t}</span><span class="${l.cls}">${l.m}</span></p>`
+      ).join('');
+      lp.scrollTop = lp.scrollHeight;
+
+      // Annotation
+      document.getElementById('annotation').innerHTML = s.annotation;
+
+      // Pipeline
+      document.querySelectorAll('.node').forEach(n => {
+        const active = (n.dataset.stages||'').split(',').map(Number).includes(current);
+        n.classList.toggle('active', active);
+      });
+
+      // Buttons
+      document.getElementById('btn-prev').disabled = current === 0;
+      document.getElementById('btn-next').disabled = current === stages.length-1;
+      document.getElementById('step-counter').textContent = (current+1)+' / '+stages.length;
+
+      // Dots
+      document.querySelectorAll('.dot').forEach((d,i) => {
+        d.classList.toggle('active',  i===current);
+        d.classList.toggle('visited', i < current);
+      });
+    }
+
+    function go(dir) { current = Math.max(0, Math.min(stages.length-1, current+dir)); render(); }
+    function reset() { current = 0; render(); }
+
+    render();
+  </script>
+</body>
+</html>
