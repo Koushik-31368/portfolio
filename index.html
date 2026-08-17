@@ -25,6 +25,8 @@
             --blue-soft: #DEE4F5;
             --gold: #B9860A;
             --gold-soft: #F5E8C8;
+            --violet: #6B4FA0;
+            --violet-soft: #E7E0F2;
             --ok: #2F7D4A;
             --display: 'Space Grotesk', sans-serif;
             --body: 'Inter', -apple-system, sans-serif;
@@ -619,8 +621,8 @@
             background: var(--signal);
         }
 
-        .proj-card.c-signal::before {
-            background: var(--signal);
+        .proj-card.c-violet::before {
+            background: var(--violet);
         }
 
         .proj-card:hover {
@@ -665,8 +667,8 @@
             color: var(--signal);
         }
 
-        .c-signal .proj-idx {
-            color: var(--signal);
+        .c-violet .proj-idx {
+            color: var(--violet);
         }
 
         .proj-top h3 {
@@ -740,8 +742,19 @@
             color: var(--signal);
         }
 
-        .c-signal ul li::before {
-            color: var(--signal);
+        .c-violet ul li::before {
+            color: var(--violet);
+        }
+
+        .proj-note {
+            font-family: var(--body);
+            font-size: 0.85rem;
+            color: var(--ink-soft);
+            background: var(--paper);
+            border: 1px dashed var(--line);
+            border-radius: 10px;
+            padding: 0.7rem 0.95rem;
+            margin-top: 1.1rem;
         }
 
         .proj-links {
@@ -1119,7 +1132,7 @@
                         <div class="l">DSA problems solved</div>
                     </div>
                     <div class="tile t3">
-                        <div class="n">5</div>
+                        <div class="n">6</div>
                         <div class="l">Projects shipped</div>
                     </div>
                     <div class="tile t4">
@@ -1156,7 +1169,7 @@
                         <div class="l">DSA problems solved</div>
                     </div>
                     <div class="stat">
-                        <div class="n">5</div>
+                        <div class="n">6</div>
                         <div class="l">Projects shipped</div>
                     </div>
                     <div class="stat">
@@ -1204,14 +1217,14 @@
                 <div class="skill-card">
                     <div class="cat"><span class="sw" style="background:var(--gold)"></span>Cloud &amp; DevOps</div>
                     <div class="vals">
-                        <span>AWS</span><span>Docker</span><span>Git</span><span>GitHub</span><span>Render</span><span>Vercel</span>
+                        <span>AWS</span><span>Docker</span><span>Git</span><span>GitHub</span><span>Render</span><span>Vercel</span><span>Prometheus</span><span>Grafana</span>
                     </div>
                 </div>
                 <div class="skill-card">
                     <div class="cat"><span class="sw" style="background:var(--signal)"></span>AI / ML</div>
                     <div class="vals"><span>RAG</span><span>Vector Embeddings</span><span>Semantic
                             Search</span><span>NLP</span><span>PyTorch</span><span>Transfer
-                            Learning</span><span>Computer Vision</span><span>OCR</span><span>Face Verification</span>
+                            Learning</span><span>Computer Vision</span><span>OCR</span><span>Face Verification</span><span>ONNX Runtime</span><span>Isolation Forest</span>
                     </div>
                 </div>
                 <div class="skill-card">
@@ -1226,61 +1239,65 @@
             <div class="sec-head">
                 <div><span class="tag">Selected work</span>
                     <h2>Projects</h2>
-                </div><span class="sec-note">5 selected builds</span>
+                </div><span class="sec-note">6 selected builds</span>
             </div>
 
-            <div class="proj-card c-blue">
+            <div class="proj-card c-violet">
                 <div class="proj-top">
                     <div>
                         <span class="proj-idx">BUILD 01</span>
-                        <h3>TradeLearn</h3>
+                        <h3>Aegis — Edge Resilience System</h3>
                     </div>
-                    <span class="proj-year">2024</span>
+                    <span class="proj-year">2026</span>
                 </div>
                 <div class="proj-stack">
                     <span>Java</span><span>Spring
-                        Boot</span><span>React</span><span>PostgreSQL</span><span>WebSockets</span><span>JWT</span><span>Docker</span>
+                        Boot</span><span>Python</span><span>Redis</span><span>Resilience4j</span><span>ONNX
+                        Runtime</span><span>PostgreSQL</span><span>Prometheus</span><span>Grafana</span><span>Docker</span>
                 </div>
                 <ul>
-                    <li>A full-stack trading education platform with a virtual portfolio for practicing strategies on
-                        simulated funds.</li>
-                    <li>Mission-based learning modules and quizzes that walk beginners through core trading concepts.
-                    </li>
-                    <li>Real-time price and portfolio updates over WebSockets.</li>
-                    <li>Containerized with Docker; deployed on Render with PostgreSQL cloud hosting.</li>
+                    <li>A distributed IoT telemetry pipeline built to demonstrate production-grade resilience
+                        patterns: AI-based anomaly scoring at the edge, circuit-breaker-triggered buffering,
+                        rate-limited recovery drain, and idempotent deduplication at the cloud.</li>
+                    <li>Edge Gateway scores every reading with an ONNX-exported Isolation Forest model before a
+                        Resilience4j-protected forward to the cloud; on failure it pushes into a
+                        criticality-aware Redis buffer that evicts the lowest-criticality reading first, not the
+                        oldest.</li>
+                    <li>DrainService listens for circuit-breaker CLOSED transitions and rate-limits the recovery
+                        drain to 5 readings/sec so live sensor traffic is never blocked; SHA-256 hashing at the
+                        edge makes replayed readings dedup-safe against a DB-level unique constraint.</li>
+                    <li>Full observability layer — custom Prometheus metrics (buffer depth, circuit-breaker state,
+                        dedup count) feeding a live Grafana dashboard, plus PowerShell chaos scripts for
+                        demoing kill/recover cycles.</li>
                 </ul>
+                <div class="proj-note">Persistence is currently verified against H2 (PostgreSQL-compatible schema via
+                    JPA); TimescaleDB-specific features (hypertables, time_bucket queries) are scoped in
+                    docker-compose but not yet independently verified.</div>
                 <div class="proj-links">
-                    <a href="https://tradelearn-project.vercel.app/" target="_blank" rel="noopener">Live Demo ↗</a>
-                    <a href="https://github.com/Koushik-31368/tradelearn-project" target="_blank" rel="noopener">GitHub
-                        ↗</a>
+                    <a href="https://github.com/Koushik-31368/Aegis" target="_blank" rel="noopener">GitHub ↗</a>
                 </div>
             </div>
 
-            <div class="proj-card c-teal">
+            <div class="proj-card c-signal">
                 <div class="proj-top">
                     <div>
                         <span class="proj-idx">BUILD 02</span>
-                        <h3>MindMesh</h3>
+                        <h3>PayRoute</h3>
                     </div>
-                    <span class="proj-year">2025</span>
+                    <span class="proj-year">2026</span>
                 </div>
                 <div class="proj-stack">
-                    <span>Node.js</span><span>Express</span><span>SQLite</span><span>Groq API</span><span>Gemini
-                        API</span><span>RAG</span><span>Chrome Extension APIs</span>
+                    <span>Java</span><span>Spring Boot</span><span>React</span><span>PostgreSQL</span><span>WebSocket</span><span>Docker</span>
                 </div>
                 <ul>
-                    <li>An AI-powered Chrome extension that turns any webpage into a searchable, conversational
-                        knowledge base.</li>
-                    <li>Full RAG pipeline — content chunking, vector embeddings, cosine-similarity search over a SQLite
-                        vector store.</li>
-                    <li>Provider-agnostic AI layer (Factory pattern): Groq as primary, Gemini as automatic fallback for
-                        reliability.</li>
-                    <li>Privacy safeguards — input validation, sensitive-data filtering, graceful handling of rate
-                        limits.</li>
+                    <li>A full-stack payment orchestration engine that routes transactions across multiple providers with automatic failover — simulating how aggregators like Stripe and Razorpay operate at scale.</li>
+                    <li>Built a manual circuit breaker from scratch (CLOSED / OPEN / HALF_OPEN state machine) with configurable rolling-window failure tracking and thread-safe transitions, without using any external library.</li>
+                    <li>Idempotency enforced via DB-level UNIQUE constraints on transaction keys, preventing duplicate charges on retries — mirrors real payment gateway design.</li>
+                    <li>Rule-based anomaly detection (large amount, burst activity, repeated failures) and a live dashboard over STOMP/WebSocket; full stack containerised with Docker Compose.</li>
                 </ul>
                 <div class="proj-links">
-                    <a href="https://github.com/Koushik-31368/mindmesh-project" target="_blank" rel="noopener">GitHub
-                        ↗</a>
+                    <a href="https://pay-route-gules.vercel.app/" target="_blank" rel="noopener">Live Demo ↗</a>
+                    <a href="https://github.com/Koushik-31368/PayRoute" target="_blank" rel="noopener">GitHub ↗</a>
                 </div>
             </div>
 
@@ -1310,10 +1327,37 @@
                 </div>
             </div>
 
-            <div class="proj-card c-gold">
+            <div class="proj-card c-blue">
                 <div class="proj-top">
                     <div>
                         <span class="proj-idx">BUILD 04</span>
+                        <h3>TradeLearn</h3>
+                    </div>
+                    <span class="proj-year">2024</span>
+                </div>
+                <div class="proj-stack">
+                    <span>Java</span><span>Spring
+                        Boot</span><span>React</span><span>PostgreSQL</span><span>WebSockets</span><span>JWT</span><span>Docker</span>
+                </div>
+                <ul>
+                    <li>A full-stack trading education platform with a virtual portfolio for practicing strategies on
+                        simulated funds.</li>
+                    <li>Mission-based learning modules and quizzes that walk beginners through core trading concepts.
+                    </li>
+                    <li>Real-time price and portfolio updates over WebSockets.</li>
+                    <li>Containerized with Docker; deployed on Render with PostgreSQL cloud hosting.</li>
+                </ul>
+                <div class="proj-links">
+                    <a href="https://tradelearn-project.vercel.app/" target="_blank" rel="noopener">Live Demo ↗</a>
+                    <a href="https://github.com/Koushik-31368/tradelearn-project" target="_blank" rel="noopener">GitHub
+                        ↗</a>
+                </div>
+            </div>
+
+            <div class="proj-card c-gold">
+                <div class="proj-top">
+                    <div>
+                        <span class="proj-idx">BUILD 05</span>
                         <h3>Kafka-Pulse</h3>
                     </div>
                     <span class="proj-year">2026</span>
@@ -1334,26 +1378,31 @@
                 </div>
             </div>
 
-            <div class="proj-card c-signal">
+            <div class="proj-card c-teal">
                 <div class="proj-top">
                     <div>
-                        <span class="proj-idx">BUILD 05</span>
-                        <h3>PayRoute</h3>
+                        <span class="proj-idx">BUILD 06</span>
+                        <h3>MindMesh</h3>
                     </div>
-                    <span class="proj-year">2026</span>
+                    <span class="proj-year">2025</span>
                 </div>
                 <div class="proj-stack">
-                    <span>Java</span><span>Spring Boot</span><span>React</span><span>PostgreSQL</span><span>WebSocket</span><span>Docker</span>
+                    <span>Node.js</span><span>Express</span><span>SQLite</span><span>Groq API</span><span>Gemini
+                        API</span><span>RAG</span><span>Chrome Extension APIs</span>
                 </div>
                 <ul>
-                    <li>A full-stack payment orchestration engine that routes transactions across multiple providers with automatic failover — simulating how aggregators like Stripe and Razorpay operate at scale.</li>
-                    <li>Built a manual circuit breaker from scratch (CLOSED / OPEN / HALF_OPEN state machine) with configurable rolling-window failure tracking and thread-safe transitions, without using any external library.</li>
-                    <li>Idempotency enforced via DB-level UNIQUE constraints on transaction keys, preventing duplicate charges on retries — mirrors real payment gateway design.</li>
-                    <li>Rule-based anomaly detection (large amount, burst activity, repeated failures) and a live dashboard over STOMP/WebSocket; full stack containerised with Docker Compose.</li>
+                    <li>An AI-powered Chrome extension that turns any webpage into a searchable, conversational
+                        knowledge base.</li>
+                    <li>Full RAG pipeline — content chunking, vector embeddings, cosine-similarity search over a SQLite
+                        vector store.</li>
+                    <li>Provider-agnostic AI layer (Factory pattern): Groq as primary, Gemini as automatic fallback for
+                        reliability.</li>
+                    <li>Privacy safeguards — input validation, sensitive-data filtering, graceful handling of rate
+                        limits.</li>
                 </ul>
                 <div class="proj-links">
-                    <a href="https://pay-route-gules.vercel.app/" target="_blank" rel="noopener">Live Demo ↗</a>
-                    <a href="https://github.com/Koushik-31368/PayRoute" target="_blank" rel="noopener">GitHub ↗</a>
+                    <a href="https://github.com/Koushik-31368/mindmesh-project" target="_blank" rel="noopener">GitHub
+                        ↗</a>
                 </div>
             </div>
         </section>
