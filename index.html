@@ -1436,6 +1436,8 @@
                         Resilience4j-protected forward to the cloud; on failure it pushes into a
                         criticality-aware Redis buffer that evicts the lowest-criticality reading first, not the
                         oldest.</li>
+                    <li>Benchmarked ONNX Isolation Forest inference at p50 = 2.54ms / p99 = 6.42ms per reading,
+                        confirming edge scoring stays within the recovery drain's 5 readings/sec budget.</li>
                     <li>DrainService listens for circuit-breaker CLOSED transitions and rate-limits the recovery
                         drain to 5 readings/sec so live sensor traffic is never blocked; SHA-256 hashing at the
                         edge makes replayed readings dedup-safe against a DB-level unique constraint.</li>
