@@ -1528,6 +1528,8 @@
                     <li>An end-to-end real-time data pipeline simulating e-commerce events using a Kafka
                         producer-consumer architecture.</li>
                     <li>In-stream processing logic to detect and flag high-value transactions before persistence.</li>
+                    <li>Producer benchmarked at ~2,619 events/sec; consumer-side bottleneck identified and documented
+                        in the README.</li>
                     <li>PostgreSQL schema designed to store processed event data for downstream analytical queries.</li>
                     <li>Kafka, Zookeeper, and PostgreSQL fully containerized with Docker Compose for a reproducible
                         local data infrastructure, plus a live terminal dashboard for monitoring throughput.</li>
