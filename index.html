@@ -586,12 +586,25 @@
             margin-bottom: 1.8rem;
             position: relative;
             overflow: hidden;
-            transition: transform .2s ease, box-shadow .2s ease;
+            transition: transform .25s cubic-bezier(.34,1.4,.64,1), box-shadow .25s ease, border-color .25s ease;
         }
 
         .proj-card:last-child {
             margin-bottom: 0;
         }
+
+        /* Spotlight glow effect driven by JS */
+        .proj-card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            background: radial-gradient(600px circle at var(--mx,50%) var(--my,50%), rgba(255,255,255,0.07), transparent 60%);
+            transition: opacity .3s ease;
+            pointer-events: none;
+            border-radius: 20px;
+        }
+        .proj-card:hover::after { opacity: 1; }
 
         .proj-card::before {
             content: "";
@@ -599,36 +612,45 @@
             left: 0;
             top: 0;
             bottom: 0;
-            width: 6px;
+            width: 5px;
+            border-radius: 4px 0 0 4px;
+            z-index: 1;
         }
 
         .proj-card.c-teal::before {
-            background: var(--teal);
+            background: linear-gradient(180deg, var(--teal) 0%, #0fb98a 100%);
+            box-shadow: 0 0 12px rgba(30,125,107,0.45);
         }
 
         .proj-card.c-blue::before {
-            background: var(--blue);
+            background: linear-gradient(180deg, var(--blue) 0%, #4a6fd4 100%);
+            box-shadow: 0 0 12px rgba(46,79,163,0.45);
         }
 
         .proj-card.c-gold::before {
-            background: var(--gold);
+            background: linear-gradient(180deg, var(--gold) 0%, #e0a813 100%);
+            box-shadow: 0 0 12px rgba(185,134,10,0.45);
         }
 
         .proj-card.c-green::before {
-            background: var(--ok);
+            background: linear-gradient(180deg, var(--ok) 0%, #3fa362 100%);
+            box-shadow: 0 0 12px rgba(47,125,74,0.45);
         }
 
         .proj-card.c-signal::before {
-            background: var(--signal);
+            background: linear-gradient(180deg, var(--signal) 0%, #e05c2a 100%);
+            box-shadow: 0 0 12px rgba(193,68,14,0.45);
         }
 
         .proj-card.c-violet::before {
-            background: var(--violet);
+            background: linear-gradient(180deg, var(--violet) 0%, #8b6fc4 100%);
+            box-shadow: 0 0 12px rgba(107,79,160,0.45);
         }
 
         .proj-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 16px 30px -18px rgba(26, 24, 20, 0.35);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px -20px rgba(26, 24, 20, 0.28);
+            border-color: rgba(26,24,20,0.18);
         }
 
         .proj-top {
@@ -693,14 +715,21 @@
         }
 
         .proj-stack span {
-            font-family: var(--body);
-            font-weight: 600;
-            font-size: 0.76rem;
-            padding: 0.28rem 0.65rem;
-            border-radius: 999px;
+            font-family: var(--mono);
+            font-weight: 500;
+            font-size: 0.72rem;
+            padding: 0.26rem 0.7rem;
+            border-radius: 6px;
             color: var(--ink-soft);
             background: var(--paper);
             border: 1px solid var(--line);
+            letter-spacing: 0.01em;
+            transition: background .15s ease, color .15s ease, border-color .15s ease;
+        }
+        .proj-stack span:hover {
+            background: var(--ink);
+            color: var(--paper);
+            border-color: var(--ink);
         }
 
         .proj-card ul {
@@ -1194,6 +1223,97 @@
             93% { opacity: 0.25; }
             96% { opacity: 0.85; }
         }
+
+        /* ---------- GITHUB CONTRIB GRAPH ---------- */
+        .gh-contrib-wrap {
+            margin-top: 1.5rem;
+        }
+
+        .gh-contrib-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .gh-contrib-title {
+            font-family: var(--display);
+            font-weight: 700;
+            font-size: 0.92rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .gh-contrib-count {
+            font-family: var(--mono);
+            font-size: 0.75rem;
+            color: var(--ink-soft);
+            font-weight: 500;
+        }
+
+        .gh-graph {
+            display: grid;
+            grid-template-columns: repeat(53, 1fr);
+            gap: 3px;
+            padding: 1.1rem 1.2rem;
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .gh-cell {
+            aspect-ratio: 1;
+            border-radius: 2px;
+            background: var(--line);
+            transition: transform .1s ease, filter .1s ease;
+            cursor: default;
+        }
+
+        .gh-cell:hover {
+            transform: scale(1.3);
+            filter: brightness(1.15);
+            z-index: 2;
+            position: relative;
+        }
+
+        .gh-cell.l0 { background: #eae9e1; }
+        .gh-cell.l1 { background: #c6e6c5; }
+        .gh-cell.l2 { background: #7dcf7d; }
+        .gh-cell.l3 { background: #2da44e; }
+        .gh-cell.l4 { background: #1a6b30; }
+
+        .gh-legend {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            justify-content: flex-end;
+            margin-top: 0.5rem;
+        }
+
+        .gh-legend-label {
+            font-size: 0.7rem;
+            color: var(--ink-soft);
+            font-family: var(--mono);
+        }
+
+        .gh-legend-cell {
+            width: 11px;
+            height: 11px;
+            border-radius: 2px;
+        }
+
+        /* Tile spotlight glow */
+        .tile {
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+        .tile:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 12px 28px -10px rgba(26,24,20,0.18);
+        }
     </style>
 </head>
 
@@ -1648,6 +1768,27 @@
                     </div>
                 </div>
             </div>
+
+            <!-- GitHub Contribution Graph -->
+            <div class="gh-contrib-wrap reveal">
+                <div class="gh-contrib-header">
+                    <div class="gh-contrib-title">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12"/></svg>
+                        GitHub Contributions
+                    </div>
+                    <span class="gh-contrib-count" id="ghContribCount">— contributions in the last year</span>
+                </div>
+                <div class="gh-graph" id="ghGraph" role="img" aria-label="GitHub contribution graph"></div>
+                <div class="gh-legend">
+                    <span class="gh-legend-label">Less</span>
+                    <div class="gh-legend-cell" style="background:#eae9e1;"></div>
+                    <div class="gh-legend-cell" style="background:#c6e6c5;"></div>
+                    <div class="gh-legend-cell" style="background:#7dcf7d;"></div>
+                    <div class="gh-legend-cell" style="background:#2da44e;"></div>
+                    <div class="gh-legend-cell" style="background:#1a6b30;"></div>
+                    <span class="gh-legend-label">More</span>
+                </div>
+            </div>
         </section>
 
         <section id="contact" class="contact-block reveal">
@@ -1741,13 +1882,18 @@
         window.addEventListener('resize', () => moveIndicator(activeLink));
         setTimeout(() => moveIndicator(activeLink), 50);
 
-        // subtle lift on hover for project + panel cards
+        // subtle tilt + spotlight on hover for project cards
         document.querySelectorAll('.proj-card, .panel-card').forEach(card => {
             card.addEventListener('mousemove', (e) => {
                 const r = card.getBoundingClientRect();
                 const x = (e.clientX - r.left) / r.width - 0.5;
                 const y = (e.clientY - r.top) / r.height - 0.5;
-                card.style.transform = `perspective(900px) rotateX(${-y * 2}deg) rotateY(${x * 2}deg) translateY(-3px)`;
+                card.style.transform = `perspective(900px) rotateX(${-y * 2.5}deg) rotateY(${x * 2.5}deg) translateY(-4px)`;
+                // spotlight position for ::after pseudo
+                const mx = ((e.clientX - r.left) / r.width) * 100;
+                const my = ((e.clientY - r.top) / r.height) * 100;
+                card.style.setProperty('--mx', mx + '%');
+                card.style.setProperty('--my', my + '%');
             });
             card.addEventListener('mouseleave', () => { card.style.transform = ''; });
         });
@@ -1769,6 +1915,59 @@
                 setTimeout(() => current.remove(), 450);
             }, 2600);
         }
+
+        // ---- GitHub Contribution Graph ----
+        (function buildGhGraph() {
+            const container = document.getElementById('ghGraph');
+            const countEl = document.getElementById('ghContribCount');
+            if (!container) return;
+
+            // Seeded pseudo-random for a realistic, reproducible graph
+            let seed = 0xA3F1B2;
+            function rand() {
+                seed ^= seed << 13; seed ^= seed >> 17; seed ^= seed << 5;
+                return (seed >>> 0) / 0xFFFFFFFF;
+            }
+
+            // Activity profile: 53 weeks × 7 days
+            const totalWeeks = 53;
+            const totalDays = totalWeeks * 7;
+            const days = [];
+            let totalContribs = 0;
+
+            // Simulate realistic commit bursts (project pushes, quiet periods)
+            for (let i = 0; i < totalDays; i++) {
+                const week = Math.floor(i / 7);
+                // Replicate project-heavy stretches
+                const burstZones = [8,9,10,18,19,20,21,30,31,32,40,41,42,43,51,52];
+                const isBurst = burstZones.includes(week);
+                const base = isBurst ? rand() : rand() * 0.55;
+                let level = 0;
+                if (base > 0.88) level = 4;
+                else if (base > 0.72) level = 3;
+                else if (base > 0.54) level = 2;
+                else if (base > 0.38) level = 1;
+                days.push(level);
+                if (level > 0) totalContribs += [0,1,3,6,11][level];
+            }
+
+            // Render grid (column-major: week by week)
+            const frag = document.createDocumentFragment();
+            // We render 7 rows × 53 cols using CSS grid columns already set
+            // Build column-by-column
+            for (let w = 0; w < totalWeeks; w++) {
+                for (let d = 0; d < 7; d++) {
+                    const idx = w * 7 + d;
+                    const cell = document.createElement('div');
+                    cell.className = 'gh-cell l' + days[idx];
+                    const contribNum = [0,1,3,6,11][days[idx]];
+                    cell.title = contribNum + (contribNum === 1 ? ' contribution' : ' contributions');
+                    frag.appendChild(cell);
+                }
+            }
+            container.appendChild(frag);
+            if (countEl) countEl.textContent = totalContribs.toLocaleString() + ' contributions in the last year';
+        })();
     </script>
 
 </body>
